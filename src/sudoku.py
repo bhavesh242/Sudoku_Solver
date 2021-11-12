@@ -1,7 +1,7 @@
 
 ROWSIZE = 9
 COLSIZE = 9
-
+empty_boxes_num = 0
 
 
 def main():
@@ -15,23 +15,28 @@ def main():
               [0, 4, 1, 6, 5, 3, 0, 0, 2],
               [2, 0, 0, 0, 4, 0, 0, 6, 0]]
     
-    
-    countsMap = analyzePuzzle(puzzle)
-    print(countsMap)
+    solve_puzzle_for_check(puzzle)
     
 
-def analyzePuzzle(puzzle):
-    countsMap = {}
-    for x in range(1,10):
-        countsMap[x] = 0;
+def solve_puzzle_for_check(puzzle):
+    get_initial_empty_boxes(puzzle)
+
+
+    if empty_boxes_num == ROWSIZE*COLSIZE:
+        print("The Sudoku was Solved")
+        for row in range(len(puzzle)):
+            print(row)
+    else:
+        print(empty_boxes_num)
+
+
+# Optimization: We store the number of empty boxes initially and change it as we assign values, so that we do not have to recalculate them on every recurisve call
+def get_initial_empty_boxes(puzzle):
+    global empty_boxes_num
     for i in range(ROWSIZE):
         for j in range(COLSIZE):
             if puzzle[i][j] == 0:
-                continue
-            else:
-                 countsMap[puzzle[i][j]] = countsMap[puzzle[i][j]] + 1
-
-    return countsMap
+                empty_boxes_num = empty_boxes_num + 1
 
 if __name__ == "__main__":
     main()
@@ -39,9 +44,3 @@ if __name__ == "__main__":
 
 
 
-class Cell:
-    def __init__(self,i,j,domain,remainCt):
-        self.i = i
-        self.j = j
-        self.domain = domain
-        self.remainCt = remainCt
