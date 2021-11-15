@@ -21,7 +21,7 @@ def main():
 def solve_puzzle_for_check(puzzle):
     get_initial_empty_cells(puzzle)
     domains = get_all_domains(puzzle)
-    forward_checking_with_heuristics(puzzle)
+    forward_checking_with_heuristics(puzzle, domains)
 
 
 def forward_checking_with_heuristics(puzzle, domains):
@@ -30,10 +30,28 @@ def forward_checking_with_heuristics(puzzle, domains):
         print("The Sudoku was Solved")
         print_op(puzzle)
         return
+    
+    cell = get_cell_with_highest_heuristics(puzzle, domains)
+
+
+def get_cell_with_highest_heuristics(puzzle, domains):
+    minLen = float('inf')
+    for x in range(constants.TOTAL_CELLS):
+        if domains[x] == None:
+            continue
+        else:
+            if len(domains[x]) < minLen:
+                minLen = len(domains[x])
+                if minLen == 1:
+                    break
+    min_len_domains = [k for k in range(constants.TOTAL_CELLS) if (domains[k]!= None and len(domains[k]) == minLen)]
+    
+    if(len(min_len_domains) == 1):
+        return min_len_domains[0]
+    
+
 
 # Optimization: We store the number of empty boxes initially and change it as we assign values, so that we do not have to recalculate them on every recurisve call
-
-
 def get_initial_empty_cells(puzzle):
     global empty_cells_num
     for i in range(constants.ROWSIZE):
@@ -66,7 +84,6 @@ def get_cell_domain(row, col, puzzle, cached_boxes):
         cached_boxes[box_number] = box_elements
     all_neighbors = box_elements.union(get_row_col_neighbors(row, col, puzzle))
     sol = exclude_set - all_neighbors
-    print(str(row) + " " + str(col) + " " + str(sol))
     return sol
 
 
